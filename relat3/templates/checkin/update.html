@@ -10,9 +10,7 @@
         <input type="text" name="title" id="title" autofocus required
             value="{{ request.form['title'] or checkin['title'] }}">
         <label for="body">Body</label>
-        <textarea name="body" id="body">
-            {{ request.form["body"] or checkin["body"] }}
-        </textarea>
+        <textarea name="body" id="body">{{ request.form["body"] or checkin["body"] }}</textarea>
         <button type="submit">Save</button>
     </form>
     <hr>
