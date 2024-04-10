@@ -1,0 +1,11 @@
+[project]
+name = "Relat3"
+version = "1.0.0"
+description = "Long relationship check-ins with your romantic partner."
+dependencies = [
+    "flask",
+]
+
+[build-system]
+requires = ["flit_core<4"]
+build-backend = "flit_core.buildapi"

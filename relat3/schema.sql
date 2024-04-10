@@ -1,0 +1,55 @@
+DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS checkins;
+DROP TABLE IF EXISTS relationships;
+DROP TABLE IF EXISTS memberships;
+DROP TABLE IF EXISTS questions;
+DROP TABLE IF EXISTS prompts;
+
+CREATE TABLE users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE NOT NULL,
+  first_name TEXT NOT NULL,
+  family_name TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  password TEXT NOT NULL
+);
+
+CREATE TABLE checkins (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  author_id INTEGER NOT NULL,
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  relationship_id INTEGER NOT NULL,
+  prompt_id INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  body TEXT NOT NULL,
+  FOREIGN KEY (author_id) REFERENCES users (id),
+  FOREIGN KEY (relationship_id) REFERENCES relationships (id),
+  FOREIGN KEY (prompt_id) REFERENCES prompts (id)
+);
+
+CREATE TABLE relationships (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  start_date TIMESTAMP NOT NULL,
+  partner_count INTEGER NOT NULL DEFAULT 2
+);
+
+CREATE TABLE memberships (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  relationship_id INTEGER NOT NULL,
+  member_id INTEGER NOT NULL,
+  FOREIGN KEY (relationship_id) REFERENCES relationships (id),
+  FOREIGN KEY (member_id) REFERENCES users (id)
+);
+
+CREATE TABLE questions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  text TEXT NOT NULL
+);
+
+CREATE TABLE prompts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  relationship_id INTEGER NOT NULL,
+  response_count INTEGER NOT NULL DEFAULT 0,
+  prompt_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  completion_date TIMESTAMP NOT NULL
+);
