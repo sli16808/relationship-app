@@ -8,6 +8,8 @@ from .db import get_db
 
 bp = Blueprint("checkin", __name__)
 
+# index route should be login-gated, show all relationships the logged-in user
+# is member of (based on memberships table)
 @bp.route("/")
 @login_required
 def index():
@@ -22,6 +24,7 @@ def index():
     return render_template("checkin/index.html", checkins=checkins)
 
 
+# create route is used to handle requests to create new checkins
 @bp.route("/create", methods=("GET", "POST",))
 @login_required
 def create():
@@ -50,6 +53,9 @@ def create():
     return render_template("checkin/create.html")
 
 
+# get_checkin is a helper function that returns a checkin or
+# throws an error if the post doesn't exist or is not written
+# by the logged-in user
 def get_checkin(id, check_author=True):
     checkin = get_db().execute(
         """
@@ -69,6 +75,7 @@ def get_checkin(id, check_author=True):
     return checkin
 
 
+# update route allows users to update a checkin as long as they are the author
 @bp.route("/<int:id>/update", methods=("GET", "POST"))
 @login_required
 def update(id):
@@ -100,6 +107,7 @@ def update(id):
     return render_template("checkin/update.html", checkin=checkin)
     
 
+# delete route lets author delete a checkin
 @bp.route("/<int:id>/delete", methods=("POST",))
 @login_required
 def delete(id):

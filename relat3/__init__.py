@@ -24,22 +24,21 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    # sample route to use for testing later
     @app.route("/hello")
     def hello():
         return "Hello, world!"
 
     # set up db
     from . import db
-
     db.init_app(app)
 
     # register auth blueprint
     from . import auth
-
     app.register_blueprint(auth.bp)
 
+    # register checkin blueprint and add route for /
     from . import checkin
-
     app.register_blueprint(checkin.bp)
     app.add_url_rule("/", endpoint="index")
 
