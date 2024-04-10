@@ -13,7 +13,7 @@
             <header>
                 <div>
                     <h1>{{ checkin['title'] }}</h1>
-                    <div class="about">by {{ checkin['username'] }} on {{ checkin['created'].strftime('%Y-%m-%d') }}</div>
+                    <div class="about">by {{ checkin['first_name'] }} {{ checkin['family_name'] }} on {{ checkin['created'].strftime('%Y-%m-%d') }}</div>
                 </div>
                 {% if g.user['id'] == checkin['author_id'] %}
                     <a class="action" href="{{ url_for('checkin.update', id=checkin['id']) }}">Edit</a>

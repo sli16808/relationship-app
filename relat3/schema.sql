@@ -7,10 +7,9 @@ DROP TABLE IF EXISTS prompts;
 
 CREATE TABLE users (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  username TEXT UNIQUE NOT NULL,
+  email TEXT UNIQUE NOT NULL,
   first_name TEXT NOT NULL,
   family_name TEXT NOT NULL,
-  email TEXT UNIQUE NOT NULL,
   password TEXT NOT NULL
 );
 

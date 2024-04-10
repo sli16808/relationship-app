@@ -1,4 +1,5 @@
 import functools
+import re
 
 from flask import (
     Blueprint,
@@ -22,43 +23,41 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 @bp.route("/register", methods=("GET", "POST"))
 def register():
     if request.method == "POST":
-        username = request.form["username"]
+        email = request.form["email"]
         password = request.form["password"]
         first_name = request.form["first-name"]
         family_name = request.form["family-name"]
-        email = request.form["email"]
         db = get_db()
         error = None
 
-        if not username:
-            error = "Username is required"
+        if not email:
+            error = "Email is required"
+        elif not email_validator(email):
+            error = "Invalid email address"
         elif not password:
             error = "Password is required"
         elif not first_name:
             error = "First name is required"
         elif not family_name:
             error = "Family name is required"
-        elif not email:
-            error = "Email is required"
 
         if error is None:
             try:
                 db.execute(
                     """
-                    INSERT INTO users (username, password, first_name, family_name, email)
-                    VALUES (?, ?, ?, ?, ?)
+                    INSERT INTO users (email, password, first_name, family_name)
+                    VALUES (?, ?, ?, ?)
                     """,
                     (
-                        username,
+                        email,
                         generate_password_hash(password),
                         first_name,
                         family_name,
-                        email,
                     ),
                 )
                 db.commit()
             except db.IntegrityError:
-                error = f"User {username} is already registered."
+                error = f"{email} is already associated with an account."
             else:
                 return redirect(url_for("auth.login"))
 
@@ -72,16 +71,16 @@ def register():
 @bp.route("/login", methods=("GET", "POST"))
 def login():
     if request.method == "POST":
-        username = request.form["username"]
+        email = request.form["email"]
         password = request.form["password"]
         db = get_db()
         error = None
         user = db.execute(
-            "SELECT * FROM users where username = ?", (username,)
+            "SELECT * FROM users where email = ?", (email,)
         ).fetchone()
 
         if user is None:
-            error = "Incorrect username."
+            error = "Email address not found."
         elif not check_password_hash(user["password"], password):
             error = "Incorrect password."
 
@@ -93,6 +92,13 @@ def login():
         flash(error)
 
     return render_template("auth/login.html")
+
+
+# logout route allows logged-in user to end session
+@bp.route("/logout")
+def logout():
+    session.clear()
+    return redirect(url_for("index"))
 
 
 # function to set g.user to session user if it exists
@@ -108,11 +114,12 @@ def load_logged_in_user():
         )
 
 
-# logout route allows logged-in user to end session
-@bp.route("/logout")
-def logout():
-    session.clear()
-    return redirect(url_for("index"))
+# validate email syntax
+def email_validator(email):
+    if re.match(r'^[\w\.-]+@[\w\.-]+$', email):
+        return True
+    else:
+        return False
 
 
 # login_required is a helper function to decorate functions

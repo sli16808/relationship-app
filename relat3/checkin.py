@@ -1,5 +1,11 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
+    Blueprint,
+    flash,
+    g,
+    redirect,
+    render_template,
+    request,
+    url_for,
 )
 from werkzeug.exceptions import abort
 
@@ -7,6 +13,7 @@ from .auth import login_required
 from .db import get_db
 
 bp = Blueprint("checkin", __name__)
+
 
 # index route should be login-gated, show all relationships the logged-in user
 # is member of (based on memberships table)
@@ -16,7 +23,7 @@ def index():
     db = get_db()
     checkins = db.execute(
         """
-        SELECT c.id, title, body, created, author_id, username
+        SELECT c.id, title, body, created, author_id, u.first_name, u.family_name
         FROM checkins c JOIN users u ON c.author_id = u.id
         ORDER BY created DESC
         """
@@ -25,7 +32,7 @@ def index():
 
 
 # create route is used to handle requests to create new checkins
-@bp.route("/create", methods=("GET", "POST",))
+@bp.route("/create", methods=("GET", "POST"))
 @login_required
 def create():
     if request.method == "POST":
@@ -45,11 +52,11 @@ def create():
                 INSERT INTO checkins (title, body, author_id)
                 VALUES (?, ?, ?)
                 """,
-                (title, body, g.user["id"])
+                (title, body, g.user["id"]),
             )
             db.commit()
             return redirect(url_for("checkin.index"))
-    
+
     return render_template("checkin/create.html")
 
 
@@ -57,14 +64,18 @@ def create():
 # throws an error if the post doesn't exist or is not written
 # by the logged-in user
 def get_checkin(id, check_author=True):
-    checkin = get_db().execute(
-        """
-        SELECT c.id, title, body, created, author_id, username
+    checkin = (
+        get_db()
+        .execute(
+            """
+        SELECT c.id, title, body, created, author_id, u.first_name, u.family_name
         FROM checkins c JOIN users u ON c.author_id = u.id
         WHERE c.id = ?
         """,
-        (id,)
-    ).fetchone()
+            (id,),
+        )
+        .fetchone()
+    )
 
     if checkin is None:
         abort(404, f"Post id {id} doesn't exist.")
@@ -99,13 +110,13 @@ def update(id):
                 SET title = ?, body = ?
                 WHERE id = ?
                 """,
-                (title, body, id)
+                (title, body, id),
             )
             db.commit()
             return redirect(url_for("checkin.index"))
-        
+
     return render_template("checkin/update.html", checkin=checkin)
-    
+
 
 # delete route lets author delete a checkin
 @bp.route("/<int:id>/delete", methods=("POST",))
@@ -118,7 +129,7 @@ def delete(id):
         DELETE FROM checkins
         WHERE id = ?
         """,
-        (id,)
+        (id,),
     )
     db.commit()
     return redirect(url_for("checkin.index"))

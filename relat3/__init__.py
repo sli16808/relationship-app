@@ -42,6 +42,9 @@ def create_app(test_config=None):
     app.register_blueprint(checkin.bp)
     app.add_url_rule("/", endpoint="index")
 
+    from . import relationship
+    app.register_blueprint(relationship.bp, url_prefix="/relationship")
+
     return app
 
 
