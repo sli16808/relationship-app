@@ -22,24 +22,58 @@
 </head>
 
 <body>
-    <nav>
-        <h1><a href="{{ url_for('index') }}">Relat3</a></h1>
-        <ul>
-            {% if g.user %}
-                <li><span>Hello, {{ g.user["first_name"] }}</span></li>
-                <li><a href="{{ url_for('auth.logout') }}">Log Out</a></li>
-            {% else %}
-                <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                <li><a href="{{ url_for('auth.login') }}">Log In</a></li>
-            {% endif %}
-        </ul>
+    <nav class="bg-light border navbar navbar-expand-md navbar-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('index') }}"><img
+                    src="{{ url_for('static', filename='logo-192x192.png') }}" alt="logo"></a>
+            <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler"
+                data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbar">
+                {% if g.user %}
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{{ url_for('index') }}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Page1</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Page2</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">Page3</a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <span>Hi, {{ g.user["first_name"] }}</span>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
+                    </li>
+                </ul>
+                {% else %}
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.register') }}">Register</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
     </nav>
+
     <section class="content">
         <header>
             {% block header %}{% endblock %}
         </header>
         {% for message in get_flashed_messages() %}
-            <div class="flash">{{ message }}</div>
+        <div class="flash">{{ message }}</div>
         {% endfor %}
         {% block content %}
         {% endblock %}
