@@ -30,6 +30,7 @@ hr {
   border-top: 1px solid lightgray;
 }
 
+/*
 nav {
   background: lightgray;
   display: flex;
@@ -60,7 +61,7 @@ header .action {
   display: block;
   padding: 0.5rem;
 }
-
+*/
 .content {
   padding: 0 1rem 1rem;
 }

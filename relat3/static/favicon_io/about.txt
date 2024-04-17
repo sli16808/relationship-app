@@ -1,0 +1,6 @@
+This favicon was generated using the following font:
+
+- Font Title: Noto Sans Brahmi
+- Font Author: Copyright 2022 The Noto Project Authors (https://github.com/notofonts/brahmi)
+- Font Source: https://fonts.gstatic.com/s/notosansbrahmi/v19/vEFK2-VODB8RrNDvZSUmQQIIByV18tK1W77HtMo.ttf
+- Font License: SIL Open Font License, 1.1 (http://scripts.sil.org/OFL))
